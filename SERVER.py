@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 @app.route("/networth", methods=["POST"])
 def get_networth():
-    INGAMENAME = request.form.get("INGAMENAME")
+    request_data = request.get_json()
+    INGAMENAME = request_data.get("INGAMENAME")
     try:
         urlNW = f"https://sky.shiiyu.moe/stats/{INGAMENAME}"
         responseNW = requests.get(urlNW)
@@ -21,10 +22,14 @@ def get_networth():
                     break
             else:
                 NW = "not found."
-        return NW
+        return jsonify({"networth": NW})
     except Exception as e:
         NW = "not found."
-        return NW
+        return jsonify({"networth": NW})
+
+@app.route("/")
+def hello_world():
+    return "Hello, World!"
 
 if __name__ == "__main__":
     app.run(debug=True)
